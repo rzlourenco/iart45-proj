@@ -1,0 +1,13 @@
+;;teste 10 - testa se a funcao psr-atribuicao-consistente mantem o psr inalterado depois de ser chamada
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;retorna NIL;2
+NIL; 2
+;;retorna 2
+2
+;;retorna (("x" . 2))
+((x . 2))
+;;retorna ("y" "z")
+(y z)

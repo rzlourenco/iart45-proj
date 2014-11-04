@@ -1,0 +1,6 @@
+;; Teste 1
+;;;testes restricao
+;;deve retornar T
+(equal (list "x" "y" "z") (restricao-variaveis (cria-restricao (list "x" "y" "z") #'evenp)))
+;;deve retornar T
+(equal #'evenp (restricao-funcao-validacao (cria-restricao (list "x" "y" "z") #'evenp)))

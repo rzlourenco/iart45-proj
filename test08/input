@@ -1,0 +1,12 @@
+;;teste 8
+(ignore-value (setf x>y #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (y (psr-variavel-valor psr "y"))) (if (and x y) (> x y) T)))))
+(ignore-value (setf x<3 #'(lambda (psr) (let ((x (psr-variavel-valor psr "x"))) (if x (< x 3) T)))))
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3))(list (cria-restricao (list "x" "y") x>y) (cria-restricao (list "x") x<3)))))
+(ignore-value (psr-altera-dominio! psr1 "x" (list 1 2 3)))
+(ignore-value (psr-altera-dominio! psr1 "y" (list 10 11 12 13)))
+;;retorna (1 2 3)
+(psr-variavel-dominio psr1 "x")
+;;retorna (10 11 12 13)
+(psr-variavel-dominio psr1 "y")
+;;retorna (0 1 2 3)
+(psr-variavel-dominio psr1 "z")

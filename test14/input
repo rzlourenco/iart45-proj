@@ -1,0 +1,14 @@
+;;teste 14 - testa a conversao de um puzzle mt simples para psr, e testa tambem que a unica restricao tem que estar a funcionar
+(ignore-value (setf psr1 (fill-a-pix->psr e0)))
+;;retorna NIL
+(psr-atribuicoes psr1)
+;;retorna T;1
+(psr-consistente-p psr1)
+(ignore-value (setf var1 (first (psr-variaveis-nao-atribuidas psr1))))
+(ignore-value (setf dominio1 (psr-variavel-dominio psr1 var1)))
+(ignore-value (psr-adiciona-atribuicao! psr1 var1 (first dominio1)))
+;;o dominio deve estar ordenado como 0,1 ou 'branco, 'preto, e portanto atribuir o primeiro valor do dominio deve resultar num psr inconsistente
+;;retorna T
+(equal (psr-variavel-valor psr1 var1) (first dominio1))
+;;retorna NIL;1
+(psr-consistente-p psr1)

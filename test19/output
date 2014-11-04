@@ -1,0 +1,3 @@
+;;; teste 19, usar o resolve-simples para resolver o exemplo 0
+;;retorna #2A((1 1 1) (1 1 1) (1 1 1))
+#2A((1 1 1) (1 1 1) (1 1 1))

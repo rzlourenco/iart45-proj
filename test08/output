@@ -1,0 +1,12 @@
+;;teste 8
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;retorna (1 2 3)
+(1 2 3)
+;;retorna (10 11 12 13)
+(10 11 12 13)
+;;retorna (0 1 2 3)
+(0 1 2 3)

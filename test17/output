@@ -1,0 +1,13 @@
+;;teste 17 - vou criar um psr mt simples (com multiplas solucoes) e usar a procura retrocesso simples para o resolver
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;retorna 14
+14
+;;retorna T
+T
+;;retorna T;3
+T; 3
+;;retorna T
+T

@@ -1,5 +1,14 @@
 (defparameter *caracter* "#")
 
+;; acrescentei algumas funcoes auxiliares que vao dar jeito para testar automaticamente o codigo dos alunos
+(defun ignore-value (x)
+	(declare (ignore x))
+	'ignore)
+	
+(defun conjuntos-iguais-p (l1 l2 &key (test #'equal))
+	(and (null (set-difference l1 l2 :test test))
+		 (null (set-difference l2 l1 :test test))))
+
 ;;;desenha-fill-a-pix: array --> {}
 ;;; recebe um array de duas dimensoes correspondente a uma solucao para um problema fill-a-pix, 
 ;;; ou seja um array que para cada casa ou tem o valor 0 para indicar que a casa nao deve ser desenhada,
@@ -29,26 +38,34 @@
 	(format T "|~%"))
 
 ;;caso mais simples possivel, uma unica restricao de que tem de ser tudo preto a volta da casa central
-(setf e0 (make-array (list 3 3) :initial-contents 
+(defparameter e0 (make-array (list 3 3) :initial-contents 
 	'((NIL NIL NIL)
 	  (NIL 9 NIL)
 	  (NIL NIL NIL))))
 
 ;;este exemplo tem multiplas solucoes possiveis
-(setf e1 (make-array (list 5 5) :initial-contents
+(defparameter e1 (make-array (list 5 5) :initial-contents
 	'((NIL 2 3 NIL NIL)
 	  (NIL NIL NIL NIL NIL)
 	  (NIL NIL 5 NIL NIL)
 	  (NIL 4 NIL 5 NIL)
 	  (NIL NIL 4 NIL NIL)
 	  )))
+	 
+	  
+(defparameter e1_1 (make-array (list 5 5) :initial-contents
+	'((NIL NIL 1 NIL NIL)
+	  (NIL 1 NIL NIL 5)
+	  (1 NIL NIL NIL 6)
+	  (NIL NIL NIL 9 NIL)
+	  (NIL 5 6 NIL NIL))))
 
 ;; os exemplos seguintes foram retirados dos seguintes sitios:
 ;; http://www.conceptispuzzles.com/index.aspx?uri=puzzle/fill-a-pix
 ;; http://www.kongregate.com/games/conceptis/basic-logic-fill-a-pix-light-vol-1
 ;; se alguma alma caridosa tiver a paciencia para construir uma das tabelas maiores (dos exemplos dos sites)
 ;; por favor envie-me um email :)
-(setf e2 (make-array (list 10 10) :initial-contents
+(defparameter e2 (make-array (list 10 10) :initial-contents
 	'((NIL 2 3 NIL NIL 0 NIL NIL NIL NIL)
 	  (NIL NIL NIL NIL 3 NIL 2 NIL NIL 6)
 	  (NIL NIL 5 NIL 5 3 NIL 5 7 4)
@@ -60,7 +77,7 @@
 	  (NIL NIL NIL NIL 6 NIL NIL NIL NIL 4)
 	  (NIL 4 4 NIL NIL NIL NIL 4 NIL NIL))))
 	  
-(setf e3 (make-array (list 10 10) :initial-contents
+(defparameter e3 (make-array (list 10 10) :initial-contents
 	'((NIL NIL 3 3 NIL NIL NIL NIL NIL NIL)
 	  (3 NIL NIL NIL NIL NIL 0 NIL 0 NIL)
 	  (NIL NIL 3 4 NIL 3 NIL NIL NIL NIL)
@@ -72,7 +89,7 @@
 	  (NIL NIL NIL 7 NIL NIL NIL 7 NIL 5)
 	  (NIL 4 NIL NIL 6 NIL 6 NIL 5 NIL))))
 	  
-(setf e4 (make-array (list 10 10) :initial-contents
+(defparameter e4 (make-array (list 10 10) :initial-contents
 	'((3 NIL NIL 2 2 0 2 2 NIL NIL)
 	  (4 NIL 6 NIL NIL 1 NIL NIL 6 4)
 	  (NIL NIL 6 NIL NIL NIL 5 6 NIL NIL)
@@ -84,7 +101,7 @@
 	  (4 NIL NIL NIL 4 3 NIL 3 3 NIL)
 	  (NIL 4 NIL 3 NIL NIL 2 NIL NIL NIL))))
 	  
-(setf e5 (make-array (list 15 15) :initial-contents
+(defparameter e5 (make-array (list 15 15) :initial-contents
 	'((0 NIL NIL 4 3 2 1 NIL NIL NIL NIL NIL 3 NIL NIL)
 	  (NIL NIL 5 NIL NIL 4 NIL NIL 4 4 NIL NIL NIL NIL 3)
 	  (NIL 5 4 5 4 5 5 NIL 5 3 NIL 1 2 NIL 3)
@@ -101,7 +118,7 @@
 	  (NIL 5 NIL 6 NIL NIL NIL NIL NIL 4 6 NIL NIL NIL NIL)
 	  (NIL NIL NIL NIL NIL NIL 3 2 0 NIL 4 4 3 NIL 2))))
 	  
-(setf e6 (make-array (list 15 15) :initial-contents
+(defparameter e6 (make-array (list 15 15) :initial-contents
 	'((NIL NIL NIL NIL 5 NIL 4 NIL NIL NIL NIL NIL 0 NIL NIL)
 	  (NIL 0 NIL NIL NIL 7 NIL NIL NIL 0 NIL NIL NIL 0 NIL)
 	  (NIL NIL NIL NIL 6 4 NIL 4 3 NIL NIL NIL 0 NIL NIL)
@@ -119,7 +136,7 @@
 	  (NIL NIL 5 NIL NIL 4 NIL 4 NIL 5 NIL 5 NIL NIL NIL))))
 	  
 ;; depois deste ja nao tive paciencia para mais...
-(setf e7 (make-array (list 20 20) :initial-contents
+(defparameter e7 (make-array (list 20 20) :initial-contents
 	'((4 NIL NIL 6 NIL NIL NIL 6 NIL NIL 4 NIL 4 NIL NIL 1 NIL NIL 3 NIL)
 	  (NIL NIL 9 NIL 8 NIL 9 8 NIL NIL NIL NIL NIL 2 2 NIL 6 NIL NIL 3)
 	  (6 NIL NIL NIL NIL 7 7 NIL NIL 2 NIL 1 2 NIL 2 4 6 8 NIL 4)

@@ -1,0 +1,5 @@
+;;teste 16 - vou criar um psr1 para um problema simples, e atribuir o 1o valor do dominio a cada variavel (0 ou branco), e vou usar as funcoes de conversao para ver se o resultado e um array de 0's.
+(ignore-value (setf psr1 (fill-a-pix->psr e0)))
+(dolist (var (psr-variaveis-nao-atribuidas psr1)) (psr-adiciona-atribuicao! psr1 var (first (psr-variavel-dominio psr1 var))))
+;;retorna #2A((0 0 0) (0 0 0) (0 0 0))
+(psr->fill-a-pix psr1 (array-dimension e0 0) (array-dimension e0 1))

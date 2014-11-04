@@ -1,0 +1,23 @@
+;;teste 9
+IGNORE
+IGNORE
+IGNORE
+;;retorna NIL;2
+NIL; 2
+;;retorna NIL
+NIL
+;;retorna NIL
+NIL
+;;retorna T;2
+T; 2
+IGNORE
+;;retorna NIL;1
+NIL; 1
+;;retorna T;1
+T; 1
+;;retorna T;0
+T; 0
+;;retorna (("x" . 2))
+((x . 2))
+;;retorna ("y" "z")
+(y z)

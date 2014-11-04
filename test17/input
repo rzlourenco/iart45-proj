@@ -1,0 +1,13 @@
+;;teste 17 - vou criar um psr mt simples (com multiplas solucoes) e usar a procura retrocesso simples para o resolver
+(ignore-value (setf x>y #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (y (psr-variavel-valor psr "y"))) (if (and x y) (> x y) T)))))
+(ignore-value (setf x<3 #'(lambda (psr) (let ((x (psr-variavel-valor psr "x"))) (if x (< x 3) T)))))
+(ignore-value (setf z!=x #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (z (psr-variavel-valor psr "z"))) (if (and x z) (not (= x z)) T)))))
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4 5) (list 0 1 2 3 4 5)) (list (cria-restricao (list "x" "y") x>y) (cria-restricao (list "x") x<3) (cria-restricao (list "x" "z") z!=x)))))
+;;retorna 14
+(multiple-value-bind (aux-psr testes-feitos) (procura-retrocesso-simples psr1) (setf psr-final aux-psr) testes-feitos)
+;;retorna T
+(psr-completo-p psr-final)
+;;retorna T;3
+(psr-consistente-p psr-final)
+;;retorna T
+(conjuntos-iguais-p (psr-atribuicoes psr-final) (list (cons "x" 1) (cons "y" 0) (cons "z" 0)))

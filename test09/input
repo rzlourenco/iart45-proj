@@ -1,0 +1,23 @@
+;;teste 9
+(ignore-value (setf x>y #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (y (psr-variavel-valor psr "y"))) (if (and x y) (> x y) T)))))
+(ignore-value (setf x<3 #'(lambda (psr) (let ((x (psr-variavel-valor psr "x"))) (if x (< x 3) T)))))
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3))(list (cria-restricao (list "x" "y") x>y) (cria-restricao (list "x") x<3)))))
+;;retorna NIL;2
+(psr-atribuicao-consistente-p psr1 "x" 4)
+;;retorna NIL
+(psr-variavel-valor psr1 "x")
+;;retorna NIL
+(psr-atribuicoes psr1)
+;;retorna T;2
+(psr-atribuicao-consistente-p psr1 "x" 2)
+(ignore-value (psr-adiciona-atribuicao! psr1 "x" 2))
+;;retorna NIL;1
+(psr-atribuicao-consistente-p psr1 "y" 3)
+;;retorna T;1
+(psr-atribuicao-consistente-p psr1 "y" 1)
+;;retorna T;0
+(psr-atribuicao-consistente-p psr1 "z" 3)
+;;retorna (("x" . 2))
+(psr-atribuicoes psr1)
+;;retorna ("y" "z")
+(psr-variaveis-nao-atribuidas psr1)

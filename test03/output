@@ -1,0 +1,14 @@
+;;; Teste 3
+IGNORE
+;;deve retornar nil, pois ainda nao foi feita qq atribuicao
+NIL
+;;deve retornar uma lista com os valores 0,1,2,3,4,5 (por esta ordem)
+(0 1 2 3 4 5)
+;; deve retornar uma lista com os valores 0,1,2,3,4 (por esta ordem)
+(0 1 2 3 4)
+;; deve retornar uma lista com os valores 0,1,2,3
+(0 1 2 3)
+;;deve retornar NIL, pois nao existem restricoes para nenhuma variavel
+NIL
+;;;deve retornar T; 0, pois nao existem restricoes para verificar
+T; 0

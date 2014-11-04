@@ -1,0 +1,14 @@
+;;; Teste 3
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3)) ())))
+;;deve retornar nil, pois ainda nao foi feita qq atribuicao
+(psr-variavel-valor psr1 "x")
+;;deve retornar uma lista com os valores 0,1,2,3,4,5 (por esta ordem)
+(psr-variavel-dominio psr1 "x")
+;; deve retornar uma lista com os valores 0,1,2,3,4 (por esta ordem)
+(psr-variavel-dominio psr1 "y")
+;; deve retornar uma lista com os valores 0,1,2,3
+(psr-variavel-dominio psr1 "z")
+;;deve retornar NIL, pois nao existem restricoes para nenhuma variavel
+(psr-variavel-restricoes psr1 "z")
+;;;deve retornar T; 0, pois nao existem restricoes para verificar
+(psr-consistente-p psr1)

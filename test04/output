@@ -1,0 +1,18 @@
+;;; Teste 4
+IGNORE
+IGNORE
+IGNORE
+;; deve retornar T
+T
+;; deve retornat T
+T
+;; deve retornar nil
+NIL
+;; deve retornar T;2 (sao testadas 2 restricoes)
+T; 2
+;; deve retornar T;2 (sao testadas 2 restricoes)
+T; 2
+;; deve retornar T;1 (e testada 1 restricao apenas)
+T; 1
+; deve retornar T;0 (nao e testada nenhuma restricao)
+T; 0

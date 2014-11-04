@@ -1,0 +1,18 @@
+;;; Teste 4
+(ignore-value (setf x>y #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (y (psr-variavel-valor psr "y"))) (if (and x y) (> x y) T)))))
+(ignore-value (setf x<3 #'(lambda (psr) (let ((x (psr-variavel-valor psr "x"))) (if x (< x 3) T)))))
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3))(list (cria-restricao (list "x" "y") x>y) (cria-restricao (list "x") x<3)))))
+;; deve retornar T
+(equal (mapcar #'restricao-funcao-validacao (psr-variavel-restricoes psr1 "x")) (list x>y x<3))
+;; deve retornat T
+(equal (mapcar #'restricao-funcao-validacao (psr-variavel-restricoes psr1 "y")) (list x>y))
+;; deve retornar nil
+(psr-variavel-restricoes psr1 "z")
+;; deve retornar T;2 (sao testadas 2 restricoes)
+(psr-consistente-p psr1)
+;; deve retornar T;2 (sao testadas 2 restricoes)
+(psr-variavel-consistente-p psr1 "x")
+;; deve retornar T;1 (e testada 1 restricao apenas)
+(psr-variavel-consistente-p psr1 "y")
+; deve retornar T;0 (nao e testada nenhuma restricao)
+(psr-variavel-consistente-p psr1 "z")

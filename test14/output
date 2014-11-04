@@ -1,0 +1,14 @@
+;;teste 14 - testa a conversao de um puzzle mt simples para psr, e testa tambem que a unica restricao tem que estar a funcionar
+IGNORE
+;;retorna NIL
+NIL
+;;retorna T;1
+T; 1
+IGNORE
+IGNORE
+IGNORE
+;;o dominio deve estar ordenado como 0,1 ou 'branco, 'preto, e portanto atribuir o primeiro valor do dominio deve resultar num psr inconsistente
+;;retorna T
+T
+;;retorna NIL;1
+NIL; 1
