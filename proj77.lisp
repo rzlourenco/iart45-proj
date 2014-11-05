@@ -151,16 +151,38 @@
 (defun fill-a-pix->psr (arr)
   (let ((vars NIL)
         (doms NIL)
-        (restrs NIL)
-        (currentElement NIL))
-    (dotimes (i (array-dimension 0 arr))
-    (dotimes (j (array-dimension 1 arr))
-      (setf vars (cons (format NIL "x~Dy~D" i j) vars))
-      (setf doms (cons (list 0 1) doms))
-      (setf currentElement (aref arr i j))
-      (cond ((equal 9 currentElement)    NIL)))) NIL))
-
-
+        (restrs NIL))
+    (dotimes (i (array-dimension arr 0))
+    (dotimes (j (array-dimension arr 1))
+      (setf vars (cons (variavel-nome (cons i j)) vars)
+            doms (cons (list 0 1) doms))
+      (let ((elm (aref arr i j))
+            (restrVars (mapcar #'variavel-nome (matrix-adjacent
+                                                  (array-dimension arr 0)
+                                                  (array-dimension arr 1)
+                                                  i j)))
+            (restrFun NIL))
+        (cond ((equal elm 0)
+                (setf restrFun
+                  #'(lambda (psr)
+                      (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
+                        (every #'(lambda (val) (equal val 0)) vals)))))
+              ((equal elm 9)
+                (setf restrFun
+                  #'(lambda (psr)
+                      (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
+                        (every #'(lambda (val) (equal val 1)) vals)))))
+              ((and elm (< elm 9) (> elm 0))
+                (setf restrFun
+                  #'(lambda (psr)
+                      (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
+                        (if (every #'identity vals)
+                          (equal elm (reduce #'+ vals))
+                          T)))))
+              (T NIL))
+        (if restrFun
+          (setf restrs (cons (cria-restricao restrVars restrFun) restrs))))))
+    (cria-psr (reverse vars) (reverse doms) restrs)))
 
 ; TODO
 (defun psr->fill-a-pix (psr l c)
@@ -217,20 +239,26 @@
           (cons (funcall f (first xs) (first ys))
           (zipWith f (rest xs) (rest ys))))))
 
-; Nota: 1 <= column <= width, 1 <= line <= height
+(defun variavel-nome (pos)
+  (format NIL "y~Dx~D" (car pos) (cdr pos)))
+
 (defun matrix-adjacent (width height column line &key (self NIL))
-  (let ((deltas (list '(-1 -1) '(-1 0) '(-1 1) '(0 -1) '(0 0) '(0 1) '(1 -1) '(1 0) '(1 1)))
-        (positions (repeat 9 (list (- line 1) (- column 1)))))
+  (let ((deltas (list '(-1 . -1) '(-1 . 0) '(-1 . 1)
+                      '( 0 . -1) '( 0 . 0) '( 0 . 1)
+                      '( 1 . -1) '( 1 . 0) '( 1 . 1)))
+        (positions (repeat 9 (cons line column))))
+    (setf width (- width 1)
+          height (- height 1))
     (zipWith
-      #'(lambda (l r) (list (+ (first l) (first r)) (+ (second l) (second r))))
+      #'(lambda (l r) (cons (+ (car l) (car r)) (+ (cdr l) (cdr r))))
       (remove-if
         #'(lambda (delta)
-            (let ((dy (first delta))
-                  (dx (second delta)))
+            (let ((dy (car delta))
+                  (dx (cdr delta)))
               (cond ((and (= line height) (= dy 1)) T)
-                    ((and (= line 1) (= dy -1)) T)
+                    ((and (= line 0) (= dy -1)) T)
                     ((and (= column width) (= dx 1)) T)
-                    ((and (= column 1) (= dx -1)) T)
+                    ((and (= column 0) (= dx -1)) T)
                     ((and (not self) (= dx 0) (= dy 0)) T))))
         deltas)
       positions)))
