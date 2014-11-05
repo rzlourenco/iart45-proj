@@ -35,9 +35,13 @@
 (defun psr-variaveis-todas (psr)
   (psr-impl-variaveis psr))
 
+; Nota: remove uma variavel se o seu valor estiver definido (!= NIL)
 (defun psr-variaveis-nao-atribuidas (psr)
-  (remove-if #'(lambda (v) (psr-variavel-valor psr v)) (psr-variaveis-todas psr)))
+  (remove-if
+    #'(lambda (v) (psr-variavel-valor psr v))
+    (psr-variaveis-todas psr)))
 
+; Nota: gethash devolve NIL se a chave nao estiver presente na hashtable
 (defun psr-variavel-valor (psr var)
   (multiple-value-bind (v found)
     (gethash var (psr-impl-atribuicoes psr))
@@ -47,15 +51,25 @@
 (defun psr-variavel-dominio (psr var)
   (list-find-assoc (psr-impl-variaveis psr) (psr-impl-dominios psr) var))
 
+; Nota: devolve uma copia da lista de restricoes onde todas as restricoes
+; devolvidas incluem a variavel especificada.
 (defun psr-variavel-restricoes (psr var)
   (remove-if
     #'(lambda (r)
       (not (find var (restricao-variaveis r) :test #'equal)))
     (psr-impl-restricoes psr)))
 
+; Nota: visto que o valor de uma variavel nao definida e NIL, entao vamos
+; aproveitar para simplificar algum codigo que faz modificaoes temporarias ao
+; permitir que atribuir NIL a uma variavel a apague, sendo desnecessario o teste
+; a NIL do valor anterior seguido de uma remocao.
 (defun psr-adiciona-atribuicao! (psr var val)
-  (setf (gethash var (psr-impl-atribuicoes psr)) val)
-  NIL)
+  (cond ((null val)
+          (psr-remove-atribuicao! psr var)
+          NIL)
+        (T
+          (setf (gethash var (psr-impl-atribuicoes psr)) val)
+          NIL)))
 
 (defun psr-remove-atribuicao! (psr var)
   (remhash var (psr-impl-atribuicoes psr))
@@ -80,6 +94,8 @@
         (psr-impl-restricoes psr))
       restrcount)))
 
+; Nota: se uma restricao nao e verificada, entao nao e necessario verificar mais
+; nenhuma. E o que e verificado na primeira forma do cond.
 (defun psr-variavel-consistente-p (psr var)
   (let ((restrcount 0))
     (values
@@ -93,30 +109,38 @@
         :initial-value T)
       restrcount)))
 
-; TODO
+; Nota: aqui fazemos uma atribuicao temporaria, testando a seguir todas as
+; restricoes que envolvem a dada variavel.
 (defun psr-atribuicao-consistente-p (psr var val)
-  (let ((restrcount 0)
-        (oldval (psr-variavel-valor psr var))
-        (result T))
+  (let ((oldval (psr-variavel-valor psr var))
+        (ret NIL))
     (psr-adiciona-atribuicao! psr var val)
+    (setf ret (psr-variavel-consistente-p psr var))
+    (psr-adiciona-atribuicao! psr var oldval)
+    ret))
+
+(defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
+  (error "asdfasd" T)
+  (let ((restrcount 0)
+        (oldval1 (psr-variavel-valor psr var1))
+        (oldval2 (psr-variavel-valor psr var2))
+        (result T))
+    (psr-adiciona-atribuicao! psr var1 val1)
+    (psr-adiciona-atribuicao! psr var2 val2)
+
     (setf result
       (reduce
         #'(lambda (acc restr)
-            (cond ((null acc) NIL)
+            (cond (acc NIL)
                   (T
                     (setf restrcount (+ restrcount 1))
                     (funcall (restricao-funcao-validacao restr) psr))))
-        (psr-variavel-restricoes psr var)
-        :initial-value result))
-    (if oldval
-      (psr-adiciona-atribuicao! psr var oldval)
-      (psr-remove-atribuicao! psr var))
-    (values result restrcount)))
+        (union (psr-variavel-restricoes psr var1)
+               (psr-variavel-restricoes psr var2))))
 
-; TODO
-(defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
-  (declare (ignore psr var1 val1 var2 val2))
-  (error "psr-atribuicoes-consistentes-arco-p is undefined!" T))
+    (psr-adiciona-atribuicao! psr var1 oldval1)
+    (psr-adiciona-atribuicao! psr var2 oldval2)
+    (values result restrcount)))
 
 ; =============================================================================
 ; = Funcoes de conversao                                                      =
@@ -169,10 +193,3 @@
   (let ((lst ()))
     (maphash #'(lambda (k v) (setf lst (cons (cons k v) lst))) table)
     lst))
-
-; Aceita um PSR e uma restricao e devolve T se todas as variaveis que nela
-; participam estao definidas nesse PSR
-(defun restricao-definida (psr restr)
-  (every
-    #'(lambda (var) (psr-variavel-valor psr var))
-    (restricao-variaveis restr)))
