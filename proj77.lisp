@@ -119,6 +119,8 @@
     (psr-adiciona-atribuicao! psr var oldval)
     (values-list ret)))
 
+; Nota: utilizamos a uniao das restricoes das variaveis para evitar verificar
+; mais do que uma vez a mesma restricao.
 (defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
   (error "asdfasd" T)
   (let ((restrcount 0)
@@ -146,10 +148,19 @@
 ; = Funcoes de conversao                                                      =
 ; =============================================================================
 
-; TODO
 (defun fill-a-pix->psr (arr)
-  (declare (ignore arr))
-  (error "fill-a-pix->psr is undefined!" T))
+  (let ((vars NIL)
+        (doms NIL)
+        (restrs NIL)
+        (currentElement NIL))
+    (dotimes (i (array-dimension 0 arr))
+    (dotimes (j (array-dimension 1 arr))
+      (setf vars (cons (format NIL "x~Dy~D" i j) vars))
+      (setf doms (cons (list 0 1) doms))
+      (setf currentElement (aref arr i j))
+      (cond ((equal 9 currentElement)    NIL)))) NIL))
+
+
 
 ; TODO
 (defun psr->fill-a-pix (psr l c)
@@ -193,3 +204,33 @@
   (let ((lst ()))
     (maphash #'(lambda (k v) (setf lst (cons (cons k v) lst))) table)
     lst))
+
+; Algumas funcoes de alta ordem que dao jeito e nao ha em Lisp
+(defun repeat (count val)
+  (cond ((= count 0) NIL)
+        (T (cons val (repeat (- count 1) val)))))
+
+(defun zipWith (f xs ys)
+  (cond ((or (null xs) (null ys))
+          NIL)
+        (T
+          (cons (funcall f (first xs) (first ys))
+          (zipWith f (rest xs) (rest ys))))))
+
+; Nota: 1 <= column <= width, 1 <= line <= height
+(defun matrix-adjacent (width height column line &key (self NIL))
+  (let ((deltas (list '(-1 -1) '(-1 0) '(-1 1) '(0 -1) '(0 0) '(0 1) '(1 -1) '(1 0) '(1 1)))
+        (positions (repeat 9 (list (- line 1) (- column 1)))))
+    (zipWith
+      #'(lambda (l r) (list (+ (first l) (first r)) (+ (second l) (second r))))
+      (remove-if
+        #'(lambda (delta)
+            (let ((dy (first delta))
+                  (dx (second delta)))
+              (cond ((and (= line height) (= dy 1)) T)
+                    ((and (= line 1) (= dy -1)) T)
+                    ((and (= column width) (= dx 1)) T)
+                    ((and (= column 1) (= dx -1)) T)
+                    ((and (not self) (= dx 0) (= dy 0)) T))))
+        deltas)
+      positions)))
