@@ -122,7 +122,6 @@
 ; Nota: utilizamos a uniao das restricoes das variaveis para evitar verificar
 ; mais do que uma vez a mesma restricao.
 (defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
-  (error "asdfasd" T)
   (let ((restrcount 0)
         (oldval1 (psr-variavel-valor psr var1))
         (oldval2 (psr-variavel-valor psr var2))
@@ -133,12 +132,13 @@
     (setf result
       (reduce
         #'(lambda (acc restr)
-            (cond (acc NIL)
+            (cond ((null acc) NIL)
                   (T
                     (setf restrcount (+ restrcount 1))
                     (funcall (restricao-funcao-validacao restr) psr))))
         (union (psr-variavel-restricoes psr var1)
-               (psr-variavel-restricoes psr var2))))
+               (psr-variavel-restricoes psr var2))
+        :initial-value result))
 
     (psr-adiciona-atribuicao! psr var1 oldval1)
     (psr-adiciona-atribuicao! psr var2 oldval2)
@@ -166,12 +166,12 @@
                 (setf restrFun
                   #'(lambda (psr)
                       (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
-                        (every #'(lambda (val) (equal val 0)) vals)))))
+                        (every #'(lambda (val) (not (equal val 1))) vals)))))
               ((equal elm 9)
                 (setf restrFun
                   #'(lambda (psr)
                       (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
-                        (every #'(lambda (val) (equal val 1)) vals)))))
+                        (every #'(lambda (val) (not (equal val 0))) vals)))))
               ((and elm (< elm 9) (> elm 0))
                 (setf restrFun
                   #'(lambda (psr)
