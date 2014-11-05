@@ -1,24 +1,16 @@
 ; Grupo 77
 ; ist176133 - Rodrigo Lourenco
 ; ist179515 - Joao Vasco Pestana
+; -*- vim: ts=8 sw=2 sts=2 expandtab -*-
 
 ; =============================================================================
 ; = Restricao                                                                 =
 ; =============================================================================
 
 ; Restricao: uma de lista de variaveis e um predicado que verifica um psr
-(defstruct restricao-impl
+(defstruct (restricao (:constructor cria-restricao (variaveis funcao-validacao)))
   (variaveis NIL)
-  (funcao-validacao #'(lambda (psr) (declare (ignore psr)) NIL)))
-
-(defun cria-restricao (vars p)
-  (make-restricao-impl :variaveis vars :funcao-validacao p))
-
-(defun restricao-variaveis (r)
-  (restricao-impl-variaveis r))
-
-(defun restricao-funcao-validacao (r)
-  (restricao-impl-funcao-validacao r))
+  (funcao-validacao #'(lambda (psr) (declare (ignore psr)) T)))
 
 ; =============================================================================
 ; = PSR                                                                       =
@@ -55,33 +47,53 @@
   (list-find-assoc (psr-impl-variaveis psr) (psr-impl-dominios psr) var))
 
 (defun psr-variavel-restricoes (psr var)
-  (remove-if #'(lambda (r) (find var (restricao-variaveis r))) (psr-impl-restricoes psr)))
+  (remove-if
+    #'(lambda (r)
+      (not (find var (restricao-variaveis r) :test #'equal)))
+    (psr-impl-restricoes psr)))
 
 (defun psr-adiciona-atribuicao! (psr var val)
-  (setf (gethash var (psr-impl-atribuicoes psr)) val))
+  (setf (gethash var (psr-impl-atribuicoes psr)) val)
+  NIL)
 
 (defun psr-remove-atribuicao! (psr var)
-  (remhash var (psr-impl-atribuicoes psr)))
+  (remhash var (psr-impl-atribuicoes psr))
+  NIL)
 
 ; TODO
 (defun psr-altera-dominio! (psr var dom)
-  (declare (ignore psr var dom))
-  (error "psr-altera-dominio! is undefined!" T))
+  (list-change-assoc (psr-impl-variaveis psr) (psr-impl-dominios psr) var dom)
+  NIL)
 
 (defun psr-completo-p (psr)
   (let ((hashcnt (hash-table-count (psr-impl-atribuicoes psr)))
         (numvars (psr-impl-num-vars psr)))
     (equal hashcnt numvars)))
 
-; TODO
 (defun psr-consistente-p (psr)
-  (declare (ignore psr var))
-  (error "psr-consistente-p is undefined!" T))
+  (let ((restrcount 0))
+    (values
+      (every
+        #'(lambda (var)
+            (multiple-value-bind (consistente cnt) (psr-variavel-consistente-p psr var)
+              (declare (ignore consistente))
+              (format T "var ~A required ~D tests~%" var cnt)
+              (setf restrcount (+ restrcount cnt))))
+        (psr-variaveis-todas psr))
+      restrcount)))
 
-; TODO
 (defun psr-variavel-consistente-p (psr var)
-  (declare (ignore psr var))
-  (error "psr-variavel-consistente-p is undefined!" T))
+  (let ((restrcount 0))
+    (values
+      (reduce
+        #'(lambda (acc restr)
+            (cond ((null acc) NIL)
+                  (T
+                    (setf restrcount (+ restrcount 1))
+                    (funcall (restricao-funcao-validacao restr) psr))))
+        (psr-variavel-restricoes psr var)
+        :initial-value T)
+      restrcount)))
 
 ; TODO
 (defun psr-atribuicao-consistente-p (psr var val)
@@ -131,12 +143,23 @@
 (defun list-find-assoc (keys vals key &optional (cmp #'equal))
   (cond ((or (null keys) (null vals)) NIL)
         ((funcall cmp (first keys) key) (first vals))
-        (T (list-find-assoc (rest keys) (rest vals) key))))
+        (T (list-find-assoc (rest keys) (rest vals) key cmp))))
+
+(defun list-change-assoc (keys vals key newval &optional (cmp #'equal))
+  (cond ((or (null keys) (null vals)) NIL)
+        ((funcall cmp (first keys) key) (setf (car vals) newval))
+        (T (list-change-assoc (rest keys) (rest vals) key newval cmp))))
 
 ; Aceita uma hash-table e devolve uma lista de todos os pares (chave valor)
 ; na tabela.
 (defun hash-table-keyvalues (table)
   (let ((lst ()))
-    (maphash #'(lambda (k v) (setf lst (cons (list k v) lst))) table)
+    (maphash #'(lambda (k v) (setf lst (cons (cons k v) lst))) table)
     lst))
 
+; Aceita um PSR e uma restricao e devolve T se todas as variaveis que nela
+; participam estao definidas nesse PSR
+(defun restricao-definida (psr restr)
+  (every
+    #'(lambda (var) (psr-variavel-valor psr var))
+    (restricao-variaveis restr)))
