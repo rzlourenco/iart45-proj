@@ -2,6 +2,7 @@
 ; ist176133 - Rodrigo Lourenco
 ; ist179515 - Joao Vasco Pestana
 ; -*- vim: ts=8 sw=2 sts=2 expandtab -*-
+(load "exemplos.fas")
 
 ; =============================================================================
 ; = Restricao                                                                 =
@@ -60,7 +61,6 @@
   (remhash var (psr-impl-atribuicoes psr))
   NIL)
 
-; TODO
 (defun psr-altera-dominio! (psr var dom)
   (list-change-assoc (psr-impl-variaveis psr) (psr-impl-dominios psr) var dom)
   NIL)
@@ -74,12 +74,10 @@
   (let ((restrcount 0))
     (values
       (every
-        #'(lambda (var)
-            (multiple-value-bind (consistente cnt) (psr-variavel-consistente-p psr var)
-              (declare (ignore consistente))
-              (format T "var ~A required ~D tests~%" var cnt)
-              (setf restrcount (+ restrcount cnt))))
-        (psr-variaveis-todas psr))
+        #'(lambda (restr)
+            (setf restrcount (+ restrcount 1))
+            (funcall (restricao-funcao-validacao restr) psr))
+        (psr-impl-restricoes psr))
       restrcount)))
 
 (defun psr-variavel-consistente-p (psr var)
@@ -97,8 +95,23 @@
 
 ; TODO
 (defun psr-atribuicao-consistente-p (psr var val)
-  (declare (ignore psr var val))
-  (error "psr-atribuicao-consistente-p is undefined!" T))
+  (let ((restrcount 0)
+        (oldval (psr-variavel-valor psr var))
+        (result T))
+    (psr-adiciona-atribuicao! psr var val)
+    (setf result
+      (reduce
+        #'(lambda (acc restr)
+            (cond ((null acc) NIL)
+                  (T
+                    (setf restrcount (+ restrcount 1))
+                    (funcall (restricao-funcao-validacao restr) psr))))
+        (psr-variavel-restricoes psr var)
+        :initial-value result))
+    (if oldval
+      (psr-adiciona-atribuicao! psr var oldval)
+      (psr-remove-atribuicao! psr var))
+    (values result restrcount)))
 
 ; TODO
 (defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
