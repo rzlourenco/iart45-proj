@@ -115,9 +115,9 @@
   (let ((oldval (psr-variavel-valor psr var))
         (ret NIL))
     (psr-adiciona-atribuicao! psr var val)
-    (setf ret (psr-variavel-consistente-p psr var))
+    (setf ret (multiple-value-list (psr-variavel-consistente-p psr var)))
     (psr-adiciona-atribuicao! psr var oldval)
-    ret))
+    (values-list ret)))
 
 (defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
   (error "asdfasd" T)
