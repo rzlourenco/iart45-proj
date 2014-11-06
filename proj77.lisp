@@ -168,7 +168,7 @@
             (restrVars (mapcar #'variavel-nome (matrix-adjacent
                                                   (array-dimension arr 0)
                                                   (array-dimension arr 1)
-                                                  i j)))
+                                                  i j :self T)))
             (restrFun NIL))
         (cond ((equal elm 0)
                 (setf restrFun
@@ -191,7 +191,6 @@
           (setf restrs (cons (cria-restricao restrVars restrFun) restrs))))))
     (cria-psr (reverse vars) (reverse doms) (reverse restrs))))
 
-; TODO
 (defun psr->fill-a-pix (psr l c)
   (let ((rows NIL)
         (currentRow NIL)
@@ -210,13 +209,33 @@
 
 ; TODO
 (defun procura-retrocesso-simples (psr)
-  (declare (ignore psr))
-  T)
+  (let ((var (car (psr-variaveis-nao-atribuidas psr)))
+        (cnt 0))
+  (if var
+    (let ((dom (psr-variavel-dominio psr var))
+          (done NIL))
+      (dolist (val dom)
+        (let ((attr (multiple-value-list (psr-atribuicao-consistente-p psr var val))))
+        (incf cnt (cadr attr))
+        (psr-adiciona-atribuicao! psr var val)
+        (if (car attr)
+          (let ((res (multiple-value-list (procura-retrocesso-simples psr))))
+          ; Contar as restricoes avaliadas pela chamada recursiva
+          ;(setf psr (car res))
+          (incf cnt (cadr res))
+          ; Procura encontrou solucao
+          (cond ((and (psr-completo-p psr) (psr-consistente-p psr))
+                  (setf done T)
+                  (return)))))))
+      (if (not done)
+        (psr-remove-atribuicao! psr var))))
+  (values psr cnt)))
 
-; TODO
 (defun resolve-simples (arr)
-  (declare (ignore arr))
-  T)
+  (psr->fill-a-pix
+    (procura-retrocesso-simples (fill-a-pix->psr arr))
+    (array-dimension arr 0)
+    (array-dimension arr 1)))
 
 ; =============================================================================
 ; = Funcoes auxiliares                                                        =
@@ -226,14 +245,20 @@
 ; valor correspondente a chave. Considera-se que o mapeamento e definido pela
 ; posicao nas listas.
 (defun list-find-assoc (keys vals key &optional (cmp #'equal))
-  (cond ((or (null keys) (null vals)) NIL)
-        ((funcall cmp (first keys) key) (first vals))
-        (T (list-find-assoc (rest keys) (rest vals) key cmp))))
+  (cond ((or (null keys) (null vals))
+          NIL)
+        ((funcall cmp (car keys) key)
+          (car vals))
+        (T
+          (list-find-assoc (cdr keys) (cdr vals) key cmp))))
 
 (defun list-change-assoc (keys vals key newval &optional (cmp #'equal))
-  (cond ((or (null keys) (null vals)) NIL)
-        ((funcall cmp (first keys) key) (setf (car vals) newval))
-        (T (list-change-assoc (rest keys) (rest vals) key newval cmp))))
+  (cond ((or (null keys) (null vals))
+          NIL)
+        ((funcall cmp (car keys) key)
+          (setf (car vals) newval))
+        (T
+          (list-change-assoc (cdr keys) (cdr vals) key newval cmp))))
 
 ; Aceita uma hash-table e devolve uma lista de todos os pares (chave valor)
 ; na tabela.
@@ -262,8 +287,8 @@
                       '( 0 . -1) '( 0 . 0) '( 0 . 1)
                       '( 1 . -1) '( 1 . 0) '( 1 . 1)))
         (positions (repeat 9 (cons line column))))
-    (setf width (- width 1)
-          height (- height 1))
+    (decf width)
+    (decf height)
     (zipWith
       #'(lambda (l r) (cons (+ (car l) (car r)) (+ (cdr l) (cdr r))))
       (remove-if
