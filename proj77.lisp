@@ -27,7 +27,14 @@
   (atribuicoes (make-hash-table :test #'equal)))
 
 (defun cria-psr (vars doms rests)
-  (make-psr-impl :variaveis vars :num-vars (list-length vars) :dominios doms :restricoes rests))
+  (make-psr-impl :variaveis vars
+                 :num-vars (list-length vars)
+                 :dominios doms
+                 :restricoes rests))
+                              ;(stable-sort rests #'<
+                              ;  :key #'(lambda (restr)
+                              ;          (list-length
+                              ;            (restricao-variaveis restr))))))
 
 (defun psr-atribuicoes (psr)
   (hash-table-keyvalues (psr-impl-atribuicoes psr)))
@@ -128,15 +135,16 @@
         (result T))
     (psr-adiciona-atribuicao! psr var1 val1)
     (psr-adiciona-atribuicao! psr var2 val2)
+    ;(format T "psr-atribuicoes-consistentes-arco-p ~A~%" (list var1 oldval1 val1 "--" var2 oldval2 val2))
 
     (setf result
       (reduce
         #'(lambda (acc restr)
             (cond ((null acc) NIL)
                   (T
-                    (setf restrcount (+ restrcount 1))
+                    (incf restrcount)
                     (funcall (restricao-funcao-validacao restr) psr))))
-        (union (psr-variavel-restricoes psr var1)
+        (intersection (psr-variavel-restricoes psr var1)
                (psr-variavel-restricoes psr var2))
         :initial-value result))
 
@@ -178,16 +186,23 @@
                       (let ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars)))
                         (if (every #'identity vals)
                           (equal elm (reduce #'+ vals))
-                          T)))))
-              (T NIL))
+                          T))))))
         (if restrFun
           (setf restrs (cons (cria-restricao restrVars restrFun) restrs))))))
-    (cria-psr (reverse vars) (reverse doms) restrs)))
+    (cria-psr (reverse vars) (reverse doms) (reverse restrs))))
 
 ; TODO
 (defun psr->fill-a-pix (psr l c)
-  (declare (ignore psr l c))
-  (error "psr->fill-a-pix is undefined!" T))
+  (let ((rows NIL)
+        (currentRow NIL)
+        (allVars (psr-variaveis-todas psr)))
+  (dotimes (i l)
+    (dotimes (j c)
+      (setf currentRow (cons (psr-variavel-valor psr (car allVars)) currentRow)
+            allVars (cdr allVars)))
+    (setf rows (cons (reverse currentRow) rows)
+          currentRow NIL))
+  (make-array (list l c) :initial-contents rows)))
 
 ; =============================================================================
 ; = Funcoes de conversao                                                      =
@@ -196,12 +211,12 @@
 ; TODO
 (defun procura-retrocesso-simples (psr)
   (declare (ignore psr))
-  (error "procura-retrocesso-simples is undefined!" T))
+  T)
 
 ; TODO
 (defun resolve-simples (arr)
   (declare (ignore arr))
-  (error "resolve-simples is undefined!" T))
+  T)
 
 ; =============================================================================
 ; = Funcoes auxiliares                                                        =
