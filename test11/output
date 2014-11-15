@@ -1,0 +1,22 @@
+;;teste 11
+IGNORE
+IGNORE
+IGNORE
+;;retorna T;1
+T; 1
+;;retorna NIL;1
+NIL; 1
+;;retorna T;0
+T; 0
+;;retorna NIL
+NIL
+;;retorna ("x" "y" "z")
+("x" "y" "z")
+;;retorna NIL
+NIL
+;;retorna NIL
+NIL
+;;retorna (0 1 2 3 4 5)
+(0 1 2 3 4 5)
+;;retorna (0 1 2 3 4)
+(0 1 2 3 4)
