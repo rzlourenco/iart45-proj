@@ -1,7 +1,7 @@
 ; Grupo 77
 ; ist176133 - Rodrigo Lourenco
 ; ist179515 - Joao Vasco Pestana
-; -*- vim: ts=8 sw=2 sts=2 expandtab
+; -*- vim: ts=8 sw=4 sts=4 expandtab
 (load "exemplos.fas")
 
 ; =============================================================================
@@ -18,6 +18,7 @@
 ; =============================================================================
 
 ; PSR: um problema de satisfacao de restricoes
+; TODO novo campo com associacao variavel->dominio?
 (defstruct psr-impl
     (variaveis NIL)
     (num-vars 0)
@@ -148,7 +149,7 @@
 
     (values-list ret)))
 
-; Nota: utilizamos a uniao das restricoes das variaveis para evitar verificar
+; Nota: utilizamos a interseccao das restricoes das variaveis para evitar verificar
 ; mais do que uma vez a mesma restricao.
 (defun psr-atribuicoes-consistentes-arco-p (psr var1 val1 var2 val2)
     (let ((restrcount 0)
@@ -175,7 +176,7 @@
         (psr-remove-atribuicao! psr var1))
     (if oldval2
         (psr-adiciona-atribuicao! psr var2 oldval2)
-        (psr-remove-atribuicao! psr var1))
+        (psr-remove-atribuicao! psr var2))
 
     (values result restrcount)))
 
@@ -201,9 +202,13 @@
             ((and (numberp elm) (>= elm 0) (<= elm 9))
                 (setf restrFun
                     #'(lambda (psr)
-                        (let* ((vals (mapcar #'(lambda (var) (psr-variavel-valor psr var)) restrVars))
-                               (remAttrs (reduce #'(lambda (acc e) (if (null e) (+ acc 1) acc)) vals :initial-value 0))
-                               (sum (reduce #'(lambda (acc e) (if e (+ acc e) acc)) vals :initial-value 0)))
+                        (let ((remAttrs 0)
+                              (sum 0))
+                        (dolist (var restrVars)
+                            (let ((e (psr-variavel-valor psr var)))
+                            (if e
+                                (incf sum e)
+                                (incf remAttrs 1))))
                         ; 1o - A soma das variaveis ja atribuidas tem de ser inferior ao valor da restricao
                         ; 2o - Pegamos no caso em que todas as variaveis nao atribuidas sao 1.
                         ; Sendo assim, se os elementos que faltam atribuir nao forem suficientes
@@ -221,7 +226,7 @@
     (dotimes (i l)
         (dotimes (j c)
             (setf currentRow (cons (psr-variavel-valor psr (variavel-nome (cons i j))) currentRow)))
-        (setf rows       (cons (reverse currentRow) rows)
+            (setf rows       (cons (reverse currentRow) rows)
               currentRow NIL))
     (make-array (list l c) :initial-contents (reverse rows))))
 
@@ -256,7 +261,7 @@
         (array-dimension arr 1)))
 
 (defun resolve-best (arr)
-    (resolve-simples (arr)))
+    (resolve-simples arr))
 
 ; =============================================================================
 ; = Funcoes auxiliares                                                        =
@@ -288,7 +293,7 @@
 (defun variavel-nome (pos)
     (format NIL "(~D,~D)" (car pos) (cdr pos)))
 
-(defun matrix-adjacent (width height line column &key (self NIL))
+(defun matrix-adjacent (height width line column &key (self NIL))
     (let ((positions (repeat 9 (cons line column)))
           (deltas (list '(-1 . -1) '(-1 . 0) '(-1 . 1)
                         '( 0 . -1) '( 0 . 0) '( 0 . 1)
@@ -309,4 +314,3 @@
                     ((and (not self) (= dx 0) (= dy 0)) T))))
             deltas)
         positions)))
-
