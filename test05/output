@@ -1,0 +1,14 @@
+;;;Teste 5
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;; deve retornar ("x" "y" "z")
+(x y z)
+;; deve retornar T
+T
+;; deve retornar ("y")
+(y)
+;;deve retornar NIL 2
+NIL; 2

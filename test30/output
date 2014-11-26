@@ -1,0 +1,18 @@
+;;; teste 30 E2, testa abstracao de dados dos tipos restricao e psr, nas funcoes procura
+#<PACKAGE TESTE>
+#<PACKAGE TESTE>
+T
+;; o projecto nao pode ser compilado, pois iria ter problemas em redefinir estruturas compiladas em lisp
+T
+;; carrega um tipo Restricao mt particular, fazendo override as definicoes dos alunos
+T
+;;vamos usar as 3 procuras da fase 2
+#2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+#2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+#2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+;; carregamos agora um tipo PSR mt particular, fazendo override as definicoes dos alunos
+T
+;;as 3 procuras tem de continuar a funcionar
+#2A((0 0 1 0 0) (0 0 1 0 0) (1 1 1 1 1) (0 0 1 0 0) (0 0 1 0 0))
+#2A((0 0 1 0 0) (0 0 1 0 0) (1 1 1 1 1) (0 0 1 0 0) (0 0 1 0 0))
+#2A((0 0 1 0 0) (0 0 1 0 0) (1 1 1 1 1) (0 0 1 0 0) (0 0 1 0 0))

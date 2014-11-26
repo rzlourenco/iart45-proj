@@ -1,0 +1,26 @@
+;;teste 7
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;deve retornar T
+T
+;;deve retornar T
+T
+;;deve retornar NIL;1
+NIL; 1
+;;deve retornar NIL
+NIL
+IGNORE
+IGNORE
+IGNORE
+;;deve retornar NIL
+NIL
+;;deve retornar NIL
+NIL
+;;deve retornar T;2
+T; 2
+;;deve retornar ("x" "y" "z")
+(x y z)

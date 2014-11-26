@@ -1,0 +1,4 @@
+;;; teste28 E2 - teste resolve-best tem 15 segundos para resolver 1 puzzle fill-a-pix trivial + 2 medios
+(resolve-best e1_2)
+(resolve-best ep_medium1)
+(resolve-best ep_medium2)

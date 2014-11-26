@@ -1,3 +1,5 @@
 ;;; teste 19, usar o resolve-simples para resolver o exemplo 0
 ;;retorna #2A((1 1 1) (1 1 1) (1 1 1))
 #2A((1 1 1) (1 1 1) (1 1 1))
+;;usar resolve-simples para resolver um exemplo nao fornecido aos alunos
+#2A((1 0 0) (0 0 0) (0 0 0))

@@ -1,0 +1,14 @@
+;;teste 15 - verifica que o psr convertido tem que ter dominios independentes para as variaveis
+IGNORE
+;;retorna NIL
+NIL
+;;retorna T;1
+T; 1
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;o dominio da variavel 2 nao pode ter sido alterado
+;;retorna T
+T

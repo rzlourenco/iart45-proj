@@ -1,0 +1,26 @@
+;;teste 7
+(ignore-value (setf x>y #'(lambda (psr) (let ((x (psr-variavel-valor psr "x")) (y (psr-variavel-valor psr "y"))) (if (and x y) (> x y) T)))))
+(ignore-value (setf x<3 #'(lambda (psr) (let ((x (psr-variavel-valor psr "x"))) (if x (< x 3) T)))))
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3))(list (cria-restricao (list "x" "y") x>y) (cria-restricao (list "x") x<3)))))
+(ignore-value (psr-adiciona-atribuicao! psr1 "x" 2))
+(ignore-value (psr-adiciona-atribuicao! psr1 "y" 3))
+(ignore-value (psr-adiciona-atribuicao! psr1 "z" 1))
+;;deve retornar T
+(conjuntos-iguais-p (psr-atribuicoes psr1) (list (cons "x" 2) (cons "y" 3) (cons "z" 1)))
+;;deve retornar T
+(psr-completo-p psr1)
+;;deve retornar NIL;1
+(psr-consistente-p psr1)
+;;deve retornar NIL
+(psr-variaveis-nao-atribuidas psr1)
+(ignore-value (psr-remove-atribuicao! psr1 "z"))
+(ignore-value (psr-remove-atribuicao! psr1 "y"))
+(ignore-value (psr-remove-atribuicao! psr1 "x"))
+;;deve retornar NIL
+(psr-completo-p psr1)
+;;deve retornar NIL
+(psr-atribuicoes psr1)
+;;deve retornar T;2
+(psr-consistente-p psr1)
+;;deve retornar ("x" "y" "z")
+(psr-variaveis-nao-atribuidas psr1)

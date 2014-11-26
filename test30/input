@@ -1,0 +1,18 @@
+;;; teste 30 E2, testa abstracao de dados dos tipos restricao e psr, nas funcoes procura
+(make-package 'teste)
+(in-package teste)
+(load "exemplos.lisp")
+;; o projecto nao pode ser compilado, pois iria ter problemas em redefinir estruturas compiladas em lisp
+(load "projecto-alunos.lisp") 
+;; carrega um tipo Restricao mt particular, fazendo override as definicoes dos alunos
+(load "TAI-restricao.lisp")
+;;vamos usar as 3 procuras da fase 2
+(multiple-value-bind (psr testes) (procura-retrocesso-grau (fill-a-pix->psr e1_1)) (values (psr->fill-a-pix psr (array-dimension e1_1 0) (array-dimension e1_1 1))))
+(multiple-value-bind (psr testes) (procura-retrocesso-fc-mrv (fill-a-pix->psr e1_1)) (values (psr->fill-a-pix psr (array-dimension e1_1 0) (array-dimension e1_1 1))))
+(multiple-value-bind (psr testes) (procura-retrocesso-MAC-mrv (fill-a-pix->psr e1_1)) (values (psr->fill-a-pix psr (array-dimension e1_1 0) (array-dimension e1_1 1))))
+;; carregamos agora um tipo PSR mt particular, fazendo override as definicoes dos alunos
+(load "TAI-psr.lisp")
+;;as 3 procuras tem de continuar a funcionar
+(multiple-value-bind (psr testes) (procura-retrocesso-grau (fill-a-pix->psr e1_2)) (values (psr->fill-a-pix psr (array-dimension e1_2 0) (array-dimension e1_2 1))))
+(multiple-value-bind (psr testes) (procura-retrocesso-fc-mrv (fill-a-pix->psr e1_2)) (values (psr->fill-a-pix psr (array-dimension e1_2 0) (array-dimension e1_2 1))))
+(multiple-value-bind (psr testes) (procura-retrocesso-MAC-mrv (fill-a-pix->psr e1_2)) (values (psr->fill-a-pix psr (array-dimension e1_2 0) (array-dimension e1_2 1))))

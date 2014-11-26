@@ -1,0 +1,13 @@
+CRIA-ALL-DIF
+R1
+R2
+R3
+IGNORE
+;;retorna 1730
+1730
+;;retorna T
+T
+;;retorna T;4
+T; 4
+;retorna T
+T

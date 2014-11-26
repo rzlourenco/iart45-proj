@@ -1,0 +1,14 @@
+;;teste 15 - verifica que o psr convertido tem que ter dominios independentes para as variaveis
+(ignore-value (setf psr1 (fill-a-pix->psr e0)))
+;;retorna NIL
+(psr-atribuicoes psr1)
+;;retorna T;1
+(psr-consistente-p psr1)
+(ignore-value (setf var1 (first (psr-variaveis-nao-atribuidas psr1))))
+(ignore-value (setf dominio1 (psr-variavel-dominio psr1 var1)))
+(ignore-value (setf var2 (second (psr-variaveis-nao-atribuidas psr1))))
+(ignore-value (setf dominio2 (copy-seq (psr-variavel-dominio psr1 var2))))
+(ignore-value (psr-altera-dominio! psr1 var1 (rest dominio1)))
+;;o dominio da variavel 2 nao pode ter sido alterado
+;;retorna T
+(equal dominio2 (psr-variavel-dominio psr1 var2))

@@ -1,0 +1,20 @@
+;;teste 12 - testa se a funcao psr-atribuicoes-consistentes-arco-p mantem o psr inalterado depois de ser chamada
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;retorna T;1
+T; 1
+;;retorna NIL;1
+NIL; 1
+;;retorna T;0
+T; 0
+;;retorna T
+T
+;;retorna 4
+4
+;;retorna 3
+3
+;;retorna ("z")
+(z)

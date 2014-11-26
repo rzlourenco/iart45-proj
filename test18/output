@@ -1,0 +1,14 @@
+;;; teste 18, vou criar um psr correspondente a um problema cripto-aritmetica e usar a procura retrocesso simples para o resolver
+CRIA-ALL-DIF
+R1
+R2
+R3
+IGNORE
+;;retorna 5977
+5977
+;;retorna T
+T
+;;retorna T;4
+T; 4
+;retorna T
+T

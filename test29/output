@@ -1,0 +1,14 @@
+;;; teste 29 E2, testa abstracao de dados dos tipos restricao e psr, na funcao resolve-simples
+#<PACKAGE TESTE>
+#<PACKAGE TESTE>
+T
+;; o projecto nao pode ser compilado, pois iria ter problemas em redefinir estruturas compiladas em lisp
+T
+;; carrega um tipo Restricao mt particular, fazendo override as definicoes dos alunos
+T
+;;retorna #2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+#2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+;; carregamos agora um tipo PSR mt particular, fazendo override as definicoes dos alunos
+T
+;;o resolve-simples tem que continuar a funcionar
+#2A((0 0 1 0 0) (0 0 1 0 0) (1 1 1 1 1) (0 0 1 0 0) (0 0 1 0 0))

@@ -1,0 +1,5 @@
+;;; teste 20, usar o resolve-simples para resolver o exemplo 1_1
+;;retorna #2A((0 0 0 0 1) (0 0 0 1 1) (0 0 1 1 1) (0 1 1 1 1) (1 1 1 1 1))
+(resolve-simples e1_1)
+;;usar o resolve-simples para resolver um exemplo que nao foi dado aos alunos (muwhahaha)
+(resolve-simples e1_2)

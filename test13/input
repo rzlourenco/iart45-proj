@@ -1,0 +1,10 @@
+;;teste 13 - testa uma parte da conversao de um puzzle mt simples para psr
+(ignore-value (setf psr1 (fill-a-pix->psr e0)))
+;;retorna NIL
+(psr-atribuicoes psr1)
+;;retorna T;1
+(psr-consistente-p psr1)
+;;retorna 2
+(length (psr-variavel-dominio psr1 (first (psr-variaveis-nao-atribuidas psr1))))
+;;retorna 2
+(length (psr-variavel-dominio psr1 (second (psr-variaveis-nao-atribuidas psr1))))

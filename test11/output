@@ -11,7 +11,7 @@ T; 0
 ;;retorna NIL
 NIL
 ;;retorna ("x" "y" "z")
-("x" "y" "z")
+(x y z)
 ;;retorna NIL
 NIL
 ;;retorna NIL

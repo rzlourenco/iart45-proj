@@ -1,0 +1,20 @@
+;;; Teste 6
+IGNORE
+IGNORE
+IGNORE
+IGNORE
+;;deve retornar NIL;2
+NIL; 2
+IGNORE
+;;deve retornar T;2
+T; 2
+IGNORE
+IGNORE
+;; deve retornar T, a funcao conjuntos iguais retorna T se duas listas tiverem elementos iguais, mesmo que por ordens diferentes
+T
+;;deve retornar NIL
+NIL
+;;deve retornar T 
+T
+;;deve retornar T;2
+T; 2

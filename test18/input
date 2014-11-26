@@ -1,0 +1,14 @@
+;;; teste 18, vou criar um psr correspondente a um problema cripto-aritmetica e usar a procura retrocesso simples para o resolver
+(defun cria-all-dif (lista-variaveis) #'(lambda (psr) (let ((valores (remove nil (mapcar #'(lambda (variavel) (psr-variavel-valor psr variavel)) lista-variaveis)))) (= (length valores) (length (remove-duplicates valores))))))
+(defun r1 (psr) (let ((i (psr-variavel-valor psr "i"))(s (psr-variavel-valor psr "s"))(l (psr-variavel-valor psr "l"))(x1 (psr-variavel-valor psr "x1")))(if (and i s l x1) (= (+ i s) (+ l (* 10 x1))) T)))
+(defun r2 (psr) (let ((i (psr-variavel-valor psr "i"))(d (psr-variavel-valor psr "d"))(l (psr-variavel-valor psr "l"))(x1 (psr-variavel-valor psr "x1"))(x2 (psr-variavel-valor psr "x2")))(if (and i d l x1 x2) (= (+ d i x1) (+ l (* x2 10))) T)))
+(defun r3 (psr) (let ((i (psr-variavel-valor psr "i"))(x2 (psr-variavel-valor psr "x2")))(if (and i x2) (= i x2) T)))
+(ignore-value (setf psr1 (cria-psr (list "i" "s" "d" "l" "x1" "x2") (list (list 0 1 2 3 4 5 6 7 8 9) (list 0 1 2 3 4 5 6 7 8 9) (list 0 1 2 3 4 5 6 7 8 9) (list 0 1 2 3 4 5 6 7 8 9) (list 0 1) (list 0 1))(list (cria-restricao (list "i" "s" "d" "l") (cria-all-dif (list "i" "s" "d" "l"))) (cria-restricao (list "i" "s" "l" "x1") #'r1)(cria-restricao (list "i" "d" "l" "x1" "x2") #'r2)(cria-restricao (list "i" "x2") #'r3)))))
+;;retorna 5977
+(multiple-value-bind (aux-psr testes-feitos) (procura-retrocesso-simples psr1) (setf psr-final aux-psr) testes-feitos)
+;;retorna T
+(psr-completo-p psr-final)
+;;retorna T;4
+(psr-consistente-p psr-final)
+;retorna T
+(conjuntos-iguais-p (psr-atribuicoes psr-final) (list (cons "i" 1) (cons "s" 9) (cons "d" 8) (cons "l" 0) (cons "x1" 1) (cons "x2" 1)))

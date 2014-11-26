@@ -1,0 +1,4 @@
+;;; teste 27 E2 - tem 15 segundos para resolver 1 puzzle fill-a-pix trivial + 2 faceis
+(resolve-best e1_1)
+(resolve-best ep_easy1) 
+(resolve-best ep_easy2)

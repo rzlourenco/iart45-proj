@@ -1,0 +1,11 @@
+;;; Teste 2
+;;; testes tipo psr
+IGNORE
+;;deve retornar NIL
+NIL
+;;deve retornar a lista vazia, pois ainda nao existem atribuicoes
+NIL
+;;deve retornar uma lista com as variaveis x,y,z por esta ordem
+(x y z)
+;;deve retornar uma lista com as variaveis x,y,z por esta ordem pois ainda nada foi atribuido
+(x y z)

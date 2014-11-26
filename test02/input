@@ -1,0 +1,11 @@
+;;; Teste 2
+;;; testes tipo psr
+(ignore-value (setf psr1 (cria-psr (list "x" "y" "z") (list (list 0 1 2 3 4 5) (list 0 1 2 3 4) (list 0 1 2 3)) ())))
+;;deve retornar NIL
+(psr-completo-p psr1)
+;;deve retornar a lista vazia, pois ainda nao existem atribuicoes
+(psr-atribuicoes psr1)
+;;deve retornar uma lista com as variaveis x,y,z por esta ordem
+(psr-variaveis-todas psr1)
+;;deve retornar uma lista com as variaveis x,y,z por esta ordem pois ainda nada foi atribuido
+(psr-variaveis-nao-atribuidas psr1)

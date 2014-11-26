@@ -1,0 +1,2 @@
+(multiple-value-bind (psr testes) (procura-retrocesso-MAC-mrv (fill-a-pix->psr e1_1)) (values testes (psr->fill-a-pix psr (array-dimension e1_1 0) (array-dimension e1_1 1))))
+(multiple-value-bind (psr testes) (procura-retrocesso-MAC-mrv (fill-a-pix->psr e1_2)) (values testes (psr->fill-a-pix psr (array-dimension e1_2 0) (array-dimension e1_2 1))))
