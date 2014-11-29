@@ -60,6 +60,13 @@
 	  (NIL	NIL	NIL	9	NIL	)
 	  (NIL	5	6	NIL	NIL	))))
 
+(defparameter e1_2 (make-array (list 5 5) :initial-contents
+	'((0	NIL	2	NIL	0	)
+	  (NIL	NIL	NIL	NIL	NIL	)
+	  (2	NIL	5	NIL	2	)
+	  (NIL	NIL	NIL	NIL	NIL	)
+	  (0	NIL	2	NIL	0	)))) 
+
 ;; os exemplos seguintes foram retirados dos seguintes sitios:
 ;; http://www.conceptispuzzles.com/index.aspx?uri=puzzle/fill-a-pix
 ;; http://www.kongregate.com/games/conceptis/basic-logic-fill-a-pix-light-vol-1
